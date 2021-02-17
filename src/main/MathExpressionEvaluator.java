@@ -65,8 +65,10 @@ public class MathExpressionEvaluator {
 			return expression;
 		}
 		
+		expression = markNegativeNumbers(expression);
+		
 		String[] additionSubstractionMembers = expression.replaceAll("[+-]", " ").split(" ");
-		String additionSubstractionOperators = expression.replaceAll("[0-9.*/]", "");
+		String additionSubstractionOperators = expression.replaceAll("[0-9.*/n]", "");
 		List<String> multiplicationDivisionResults = new ArrayList<>();
 		String[] multiplicationDivisionMembers;
 		String multiplicationDivisionOperators;
@@ -75,14 +77,14 @@ public class MathExpressionEvaluator {
 		for (String s : additionSubstractionMembers) {
 			
 			multiplicationDivisionMembers = s.replaceAll("[*/]", " ").split(" ");
-			multiplicationDivisionOperators = s.replaceAll("[0-9.]", "");
-			result = Float.valueOf(multiplicationDivisionMembers[0]);
+			multiplicationDivisionOperators = s.replaceAll("[0-9.n]", "");
+			result = Float.valueOf(multiplicationDivisionMembers[0].replaceAll("n", "-"));
 			
 			for (int i = 0; i < multiplicationDivisionOperators.length(); i++) {
 				if (multiplicationDivisionOperators.charAt(i) == '*') {
-					result *= Float.valueOf(multiplicationDivisionMembers[i+1]);
+					result *= Float.valueOf(multiplicationDivisionMembers[i+1].replaceAll("n", "-"));
 				} else if (multiplicationDivisionOperators.charAt(i) == '/') {
-					result /= Float.valueOf(multiplicationDivisionMembers[i+1]);
+					result /= Float.valueOf(multiplicationDivisionMembers[i+1].replaceAll("n", "-"));
 				}
 			}
 			
@@ -103,15 +105,17 @@ public class MathExpressionEvaluator {
 	// the expression should contain only the following characters: 0-9, +, -
 	public static String evaluateAdditionSubstraction(String expression) {
 		
+		expression = markNegativeNumbers(expression);
+		
 		String[] additionSubstrationMembers = expression.replaceAll("[+-]", " ").split(" ");
-		String additionSubstrationOperators = expression.replaceAll("[0-9.]", "");
-		Float result = Float.valueOf(additionSubstrationMembers[0]);
+		String additionSubstrationOperators = expression.replaceAll("[0-9.n]", "");
+		Float result = Float.valueOf(additionSubstrationMembers[0].replaceAll("n", "-"));
 		
 		for (int i = 0; i < additionSubstrationOperators.length(); i++) {
 			if (additionSubstrationOperators.charAt(i) == '+') {
-				result += Float.valueOf(additionSubstrationMembers[i+1]);
+				result += Float.valueOf(additionSubstrationMembers[i+1].replaceAll("n", "-"));
 			} else if (additionSubstrationOperators.charAt(i) == '-') {
-				result -= Float.valueOf(additionSubstrationMembers[i+1]);
+				result -= Float.valueOf(additionSubstrationMembers[i+1].replaceAll("n", "-"));
 			}
 		}
 		
@@ -133,4 +137,19 @@ public class MathExpressionEvaluator {
 		}
 		return true;
 	}
+	
+	public static String markNegativeNumbers(String expression) {
+		if (expression.charAt(0) == '-') {
+			expression = 'n' + expression.substring(1);
+		}
+		expression = expression.replaceAll(Pattern.quote("--"), "-n");
+		expression = expression.replaceAll(Pattern.quote("+-"), "+n");
+		expression = expression.replaceAll(Pattern.quote("*-"), "*n");
+		expression = expression.replaceAll(Pattern.quote("/-"), "/n");
+		
+		return expression;
+		
+	}
+	
+
 }

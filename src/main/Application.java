@@ -6,6 +6,7 @@ public class Application {
 		
 		Calculator calc = new Calculator();
 		calc.start();
+		
 	}
 	
 	
