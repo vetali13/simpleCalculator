@@ -138,6 +138,8 @@ public class MathExpressionEvaluator {
 		return true;
 	}
 	
+	
+	// checks for negative numbers in the expression and replace the sign "-" with an "n" flag
 	public static String markNegativeNumbers(String expression) {
 		if (expression.charAt(0) == '-') {
 			expression = 'n' + expression.substring(1);
@@ -147,8 +149,7 @@ public class MathExpressionEvaluator {
 		expression = expression.replaceAll(Pattern.quote("*-"), "*n");
 		expression = expression.replaceAll(Pattern.quote("/-"), "/n");
 		
-		return expression;
-		
+		return expression;	
 	}
 	
 
